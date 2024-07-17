@@ -1,0 +1,84 @@
+---
+title: "GTO_task"
+output:
+  flexdashboard::flex_dashboard:
+    theme: 
+      version: 4
+      bootswatch: minty
+---
+
+
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F)
+library(readxl)
+library(tidyverse)
+library(kableExtra)
+```
+
+Introduction {.tabset}
+======================
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+### Introduction
+
+This is a dashboard built by R studio. The data sources of the contents are from: 
+
+1. https://www.hkex.com.hk/Market-Data/Securities-Prices/Exchange-Traded-Products?sc_lang=en
+
+2. https://www.hkex.com.hk/Market-Data/Securities-Prices/Exchange-Traded-Products/Exchange-Traded-Products-Quote?sym=3068&sc_lang=en
+
+
+```{r read-data}
+ df <- read_excel("ETP_Data_Export.xlsx")
+```
+
+
+
+```{r clean_data}
+close <- df %>% 
+  select(`Trade date`, `Stock code*`, `Stock long name*`,`Trading currency*`,`Closing price`) %>% 
+  mutate(`Trade date` = as.Date(`Trade date`, "%d/%m/%y"),
+         `Closing price` = as.numeric(`Closing price`))
+
+```
+
+
+
+# Closing price of Crypto ETF
+
+```{r}
+DT::datatable(close,
+          filter = 'top',
+          options = list(pageLength = 10,
+                         scrollX = TRUE,
+                         auto_browse(TRUE),
+                         autoWidth = TRUE))
+```
+
+# Plot
+
+```{r}
+library(plotly)
+close %>% 
+  group_by(`Stock code*`) %>% 
+  filter(`Stock code*` == "3068") %>% 
+  ggplot(aes(x = `Trade date`,
+         y = `Closing price`,
+         colour = `Stock code*`)) + 
+  geom_line()+
+  theme_bw()+
+  labs(title = "Monthly Trend of 3068 closing price ")+
+  guides(color=FALSE)
+  ggplotly()
+```
+
+
+
+
+
+
+
+
