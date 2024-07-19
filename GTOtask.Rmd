@@ -49,14 +49,33 @@ close <- df %>%
 
 # Closing price of Crypto ETF
 
-```{r}
+```{r }
 DT::datatable(close,
           filter = 'top',
           options = list(pageLength = 10,
                          scrollX = TRUE,
                          auto_browse(TRUE),
                          autoWidth = TRUE))
+
 ```
+
+# difference
+
+```{r}
+library(readr)
+display <- read_csv("display.csv") %>% 
+  na.omit()
+DT::datatable(display,
+          filter = 'top',
+          options = list(pageLength = 10,
+                         scrollX = TRUE,
+                         auto_browse(TRUE),
+                         autoWidth = TRUE))
+
+
+```
+
+
 
 # Plot
 
@@ -76,7 +95,11 @@ close %>%
 ```
 
 
-
+# Improvement
+- 数据无法获得：更换数据源，yahoo finance
+- 数据存储：建立MySQL数据库
+- 数据可视化：增加筛选功能，stock code、name、time进行筛选，可视化stock变化趋势
+- 信息推荐：推荐相关信息，NASDAQ closing、Hang Seng Tech
 
 
 
